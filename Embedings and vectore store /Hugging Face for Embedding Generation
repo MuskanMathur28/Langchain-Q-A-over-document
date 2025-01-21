@@ -1,1 +1,72 @@
+# Required imports
+from sentence_transformers import SentenceTransformer
+from transformers import AutoModel, AutoTokenizer
+import numpy as np
+from langchain_community.vectorstores import FAISS
+from langchain_community.document_loaders import PyPDFLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+import faiss
+
+# Load the pre-trained model from Hugging Face
+model = SentenceTransformer('paraphrase-MiniLM-L6-v2')
+
+# Load the PDF
+loader = PyPDFLoader("C:/Users/Asus/OneDrive/Documents/MLBOOK.pdf")
+pages = loader.load()
+
+# Display basic information about the PDF
+print(f"Total pages: {len(pages)}")
+print(f"First 500 characters of page 1:\n{pages[0].page_content[:500]}")
+print(f"Metadata of page 1:\n{pages[0].metadata}")
+
+# Combine all pages into a single document
+document_text = " ".join([page.page_content for page in pages])
+
+# Apply RecursiveCharacterTextSplitter
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,  # Maximum size of each chunk in characters
+    chunk_overlap=200,  # Overlap between chunks to maintain context
+    separators=["\n\n", "\n", " "]  # Prioritize splitting by paragraphs, then lines, then spaces
+)
+
+# Split the document into chunks
+chunks = text_splitter.split_text(document_text)
+
+# Display information about the chunks
+print(f"\nTotal chunks: {len(chunks)}")
+for i, chunk in enumerate(chunks[:3], 1):  # Display the first 3 chunks
+    print(f"\nChunk {i}:\n{chunk}\n")
+
+# --- Step 1: Generate Embeddings for the Chunks ---
+# Generate embeddings for the chunks using Hugging Face's Sentence-Transformer
+chunk_embeddings = model.encode(chunks)
+
+# Convert embeddings into numpy arrays for FAISS
+embedding_vectors = np.array(chunk_embeddings).astype("float32")
+
+# --- Step 2: Create FAISS Vector Store ---
+# Create a FAISS index (using L2 distance)
+faiss_index = faiss.IndexFlatL2(embedding_vectors.shape[1])
+
+# Add embeddings to the FAISS index
+faiss_index.add(embedding_vectors)
+
+# --- Step 3: Query the Vector Store ---
+query = "What is machine learning?"
+
+# Convert the query into embedding
+query_embedding = model.encode([query])
+
+# Convert the query embedding into a numpy array
+query_vector = np.array(query_embedding).astype("float32")
+
+# Search the FAISS index for the closest chunk (k=3 to get the top 3 results)
+D, I = faiss_index.search(query_vector.reshape(1, -1), k=3)
+
+# --- Step 4: Display the Results ---
+# Show the top 3 relevant chunks based on the query
+print(f"\nTop 3 most relevant chunks for the query '{query}':")
+for i in range(3):
+    chunk_idx = I[0][i]  # Get the index of the chunk in the original list
+    print(f"\nRelevant Chunk {i+1} (Distance: {D[0][i]}):\n{chunks[chunk_idx]}\n")
 
