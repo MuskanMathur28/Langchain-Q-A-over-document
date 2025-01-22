@@ -49,3 +49,8 @@ for idx, (score, doc) in enumerate(top_k_documents, 1):
     print(f"  Date: {doc['date']}")
     print(f"  Relevance Score: {score:.4f}")
     print(f"  Content: {doc['content']}\n")
+
+
+"""
+Self-query focuses on retrieving documents based purely on the content of the query and the documents themselves, often in a self-contained manner without relying on external context.
+"""
