@@ -66,3 +66,23 @@ top_documents = max_marginal_relevance(query, documents, lambda_param=0.5, top_k
 print("Selected Documents:")
 for doc in top_documents:
     print(f"- {doc}")
+
+
+
+
+
+"""
+MMR is commonly used in document retrieval, search engines, and question-answering systems to retrieve a set of documents that are not only highly relevant to the query but also diverse in their content. This implementation uses the Sentence-Transformer model to compute embeddings and the cosine similarity measure to calculate relevance and redundancy.
+Relevance: How well a document answers or matches the query.
+Redundancy: How similar a document is to the documents already selected.
+MMR Score: A combination of relevance and redundancy, calculated using the formula:-
+MMR(D)=λ⋅Relevance(D)−(1−λ)⋅Redundancy(D) ,
+Where λ (lambda) is a hyperparameter that controls the balance between relevance and redundancy.
+
+How It Works:
+1. Embed the query and documents: Use the Sentence-Transformer model to convert the text into embeddings (numerical vectors).
+2. Compute relevance: Calculate how relevant each document is to the query using cosine similarity.
+3. Compute redundancy: Calculate how similar each document is to the documents that have already been selected.
+4. Score documents using MMR: Combine relevance and redundancy to select the document with the highest MMR score.
+5. Select top K documents: Repeat the process until the desired number of documents is retrieved.
+"""
