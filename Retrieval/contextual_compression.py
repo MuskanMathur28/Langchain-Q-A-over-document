@@ -62,3 +62,8 @@ compressed_text = contextual_compression(document_text, batch_size=batch_size, o
 
 # Print confirmation
 print(f"Compressed summary saved to {output_file}.")
+
+
+"""
+Compression is another approach to improve the quality of retrieved docs. Since passing the full document through the application can lead to more expensive LLM calls and poorer response , it is useful to pull out only the most relevant bits of retrieved passages.
+"""
