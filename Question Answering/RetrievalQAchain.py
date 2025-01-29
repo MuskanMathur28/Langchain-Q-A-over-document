@@ -43,3 +43,31 @@ results = retriever.invoke(query)  # Updated to use 'invoke'
 print("\nRelevant Documents:")
 for i, result in enumerate(results):
     print(f"Document {i+1}:\n{result.page_content[:300]}...\n")  # Corrected extraction
+
+"""
+Retrieval-Based Question Answering System using LangChain and FAISS
+This Python code demonstrates how to build a Retrieval-based Question Answering (QA) system using LangChain, FAISS, and HuggingFace embeddings. It processes a PDF document, splits it into chunks, generates text embeddings, and uses FAISS to retrieve relevant documents based on a given query.
+
+Steps in the Code:
+Load PDF Document:
+
+The PyPDFLoader loads a PDF document (in this case, "MLBOOK.pdf") and extracts text from it.
+Text Chunking:
+
+The CharacterTextSplitter splits the document into smaller chunks of text for easier processing, with each chunk containing up to 1000 characters and 100-character overlap between chunks.
+Text Cleaning:
+
+A cleaning process is applied to remove unwanted characters (like symbols, numbers, etc.) from the extracted text using regular expressions.
+Generate Embeddings:
+
+HuggingFaceEmbeddings from the langchain_huggingface library is used to generate vector embeddings for the cleaned text chunks using the pre-trained "all-MiniLM-L6-v2" model.
+Create FAISS VectorStore:
+
+FAISS is used to create a vector store from the generated embeddings, enabling efficient similarity-based search.
+Retrieve Relevant Documents:
+
+A retriever is set up to search for the most relevant document chunk based on a query using similarity search.
+Query the System:
+
+The retriever is queried with a sample question ("What is the main topic discussed in the document?"), and the relevant document chunk(s) are returned based on the highest similarity to the query.
+"""
