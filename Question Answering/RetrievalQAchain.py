@@ -44,6 +44,13 @@ print("\nRelevant Documents:")
 for i, result in enumerate(results):
     print(f"Document {i+1}:\n{result.page_content[:300]}...\n")  # Corrected extraction
 
+
+
+
+
+
+
+
 """
 Retrieval-Based Question Answering System using LangChain and FAISS
 This Python code demonstrates how to build a Retrieval-based Question Answering (QA) system using LangChain, FAISS, and HuggingFace embeddings. It processes a PDF document, splits it into chunks, generates text embeddings, and uses FAISS to retrieve relevant documents based on a given query.
